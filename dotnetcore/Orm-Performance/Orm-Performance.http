@@ -1,0 +1,6 @@
+@Orm_Performance_HostAddress = http://localhost:5294
+
+GET {{Orm_Performance_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

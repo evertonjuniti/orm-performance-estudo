@@ -32,9 +32,17 @@ A porta configurada é a default para o PostgreSQL: 5432. Você pode mudar caso 
 
 Configure as conexões para os três bancos de dados. A vantagem do DBeaver é essa, você consegue utilizar vários bancos de dados distintos.
 
-Abaixo um exemplo de como configurar:
+Abaixo um exemplo de como configurar (com SQL Server):
 
-1) Clique no botão de "Nova conexão" (destacado em vermelho)
+1) Clique no botão de `Nova conexão` (destacado em vermelho)
 
-[/imagens/imagem1.png](/imagens/imagem1.png)
+[imagens/imagem1.png](imagens/imagem1.png)
+
+2) Clique na opção SQL Server e depois clique em avançar
+
+[imagens/imagem2.png](imagens/imagem2.png)
+
+3) Pode manter todas as configurações padrão, somente na parte de autenticação indique o usuário `sa` e a senha `Minha@senha`, depois clique no botão `Concluir`
+
+[imagens/imagem3.png](imagens/imagem3.png)
 

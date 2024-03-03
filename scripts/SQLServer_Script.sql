@@ -3,39 +3,37 @@
 -- ***************************************************************
 -- ***************************************************************
 
-SET DATEFORMAT ymd
+SET DATEFORMAT ymd;
 
 IF EXISTS(SELECT * FROM sys.procedures WHERE name = 'PopularVendas')  
 BEGIN 
-	DROP PROCEDURE dbo.PopularVendas 
+	DROP PROCEDURE dbo.PopularVendas;
 END 
 
 IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Vendas')  
 BEGIN 
-	DROP TABLE dbo.Vendas 
+	DROP TABLE dbo.Vendas;
 END 
 
 IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Produto')  
 BEGIN 
-	DROP TABLE dbo.Produto 
+	DROP TABLE dbo.Produto;
 END 
 
 IF EXISTS(SELECT * FROM sys.tables WHERE name = 'CadastroCliente')  
 BEGIN 
-	DROP TABLE dbo.CadastroCliente 
+	DROP TABLE dbo.CadastroCliente;
 END 
 
 IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Cidade')  
 BEGIN 
-	DROP TABLE dbo.Cidade 
+	DROP TABLE dbo.Cidade;
 END 
 
 IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Estado')  
 BEGIN 
-	DROP TABLE dbo.Estado 
+	DROP TABLE dbo.Estado;
 END 
-
-GO 
 
 /*
 Tabela de dominio que representa os estados brasileiros
@@ -46,12 +44,12 @@ CREATE TABLE dbo.Estado
 	Id TINYINT IDENTITY(1, 1) NOT NULL, 
 	Descricao VARCHAR(150) NOT NULL, 
 	CONSTRAINT PK_Estado PRIMARY KEY (Id) 
-)
+);
 
 INSERT INTO dbo.Estado (Descricao) 
 VALUES ('Sao Paulo'), 
        ('Rio de Janeiro'), 
-	   ('Minas Gerais') 
+	   ('Minas Gerais');
 
 /*
 Tabela de dominio que representa as cidades brasileiras
@@ -65,7 +63,7 @@ CREATE TABLE dbo.Cidade
 	Descricao VARCHAR(250) NOT NULL, 
 	CONSTRAINT PK_Cidade PRIMARY KEY (Id), 
 	CONSTRAINT FK_Estado_Cidade FOREIGN KEY (Id_Estado) REFERENCES Estado (Id) 
-) 
+);
 
 INSERT INTO dbo.Cidade (Id_Estado, Descricao) 
 VALUES (1, 'Santo Andre'), 
@@ -76,7 +74,7 @@ VALUES (1, 'Santo Andre'),
 	   (2, 'Petropolis'), 
 	   (3, 'Uberlandia'), 
 	   (3, 'Contagem'), 
-	   (3, 'Juiz de Fora') 
+	   (3, 'Juiz de Fora');
 
 /*
 Representacao da tabela de cadastro de clientes
@@ -96,7 +94,7 @@ CREATE TABLE dbo.CadastroCliente
 	Telefone3 VARCHAR(20) NULL, 
 	CONSTRAINT PK_CadastroCliente PRIMARY KEY (Id), 
 	CONSTRAINT FK_Cidade_CadastroCliente FOREIGN KEY (Id_Cidade) REFERENCES Cidade (Id) 
-) 
+);
 
 INSERT INTO dbo.CadastroCliente (Nome, Endereco, Id_Cidade, Email, Telefone1, Telefone2, Telefone3) 
 VALUES ('Cliente 1',  'Rua 1',  1, 'cliente_1@email.com',  '(11) 0000-0000', NULL, NULL), 
@@ -125,7 +123,7 @@ VALUES ('Cliente 1',  'Rua 1',  1, 'cliente_1@email.com',  '(11) 0000-0000', NUL
 	   ('Cliente 24', 'Rua 24', 8, 'cliente_24@email.com', '(31) 0000-0000', '(31) 1111-1111', '(31) 2222-2222'), 
 	   ('Cliente 25', 'Rua 25', 9, 'cliente_25@email.com', '(31) 0000-0000', NULL,             NULL), 
 	   ('Cliente 26', 'Rua 26', 9, 'cliente_26@email.com', '(31) 0000-0000', '(31) 1111-1111', '(31) 2222-2222'), 
-	   ('Cliente 27', 'Rua 27', 9, 'cliente_27@email.com', '(31) 0000-0000', '(31) 1111-1111', NULL) 
+	   ('Cliente 27', 'Rua 27', 9, 'cliente_27@email.com', '(31) 0000-0000', '(31) 1111-1111', NULL); 
 
 /*
 Criacao de uma tabela para cadastro simples de produtos
@@ -136,18 +134,18 @@ CREATE TABLE dbo.Produto
 	Id SMALLINT IDENTITY(1, 1) NOT NULL, 
 	Descricao VARCHAR(250) NOT NULL, 
 	CONSTRAINT PK_Produto PRIMARY KEY (Id) 
-) 
+);
 
 /*
 Criacao de um indice auxiliar, para filtragem a partir da coluna Descricao da tabela Produto
 */
 
-CREATE NONCLUSTERED INDEX IDX_Produto_Descricao ON dbo.Produto (Descricao) 
+CREATE NONCLUSTERED INDEX IDX_Produto_Descricao ON dbo.Produto (Descricao);
 
 INSERT INTO dbo.Produto (Descricao) 
 VALUES ('Produto A'), 
        ('Produto B'), 
-       ('Produto C')
+       ('Produto C');
 
 /*
 Criacao de uma tabela de vendas que ira unir informacoes de clientes e produtos
@@ -167,25 +165,21 @@ CREATE TABLE dbo.Vendas
 	CONSTRAINT UC_Vendas_Pedido_Cliente_Produto UNIQUE (Pedido, Id_Cliente, Id_Produto), 
 	CONSTRAINT FK_CadastroCliente_Vendas FOREIGN KEY (Id_Cliente) REFERENCES CadastroCliente (Id), 
 	CONSTRAINT FK_Produto_Vendas FOREIGN KEY (Id_Produto) REFERENCES Produto (Id) 
-) 
+);
 
 /*
 Criacao de um indice auxiliar, para uso no JOIN atraves das colunas Id_Cliente (com a tabela CadastroCliente) e Id_Produto (com a tabela Produto) 
 */
 
-CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Cliente ON dbo.Vendas (Id_Cliente) 
-CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Produto ON dbo.Vendas (Id_Produto) 
+CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Cliente ON dbo.Vendas (Id_Cliente);
+CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Produto ON dbo.Vendas (Id_Produto);
 
 /*
 Criacao de um indice auxiliar, para filtragem a partir da coluna "Data Venda" da tabela Vendas
 */
 
-CREATE NONCLUSTERED INDEX IDX_Vendas_DataVenda ON dbo.Vendas("Data Venda") INCLUDE (Quantidade, "Valor Unitario") 
-GO 
+CREATE NONCLUSTERED INDEX IDX_Vendas_DataVenda ON dbo.Vendas("Data Venda") INCLUDE (Quantidade, "Valor Unitario"); 
 
-CREATE PROCEDURE dbo.PopularVendas 
-AS 
-BEGIN 
 	DECLARE @DataInicial SMALLDATETIME = CAST('1990-01-01' AS SMALLDATETIME) 
 	DECLARE @DataFinal SMALLDATETIME = CAST('2024-03-01' AS SMALLDATETIME) 
 	DECLARE @DataAtual SMALLDATETIME = @DataInicial
@@ -249,12 +243,7 @@ BEGIN
 	IF (@BlocoAtual > 0) 
 	BEGIN 
 		COMMIT TRANSACTION 
-	END 
-END 
-GO 
-
-EXEC dbo.PopularVendas 
-GO 
+	END
 
 -- ***************************************************************
 -- ***************************************************************

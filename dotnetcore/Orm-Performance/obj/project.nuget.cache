@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "sP/Yut80QeCPficx1lmoqemy5qtAnlNJuvejZ4OtXPQo9SMpmj8Rb++Fqd+UlUGdwHLYjBK4pTMwD2kBAVs5ew==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Everton Juniti Ogura\\Documents\\Github\\orm-performance-estudo\\dotnetcore\\Orm-Performance\\Orm-Performance.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "C:\\Users\\Everton Juniti Ogura\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}

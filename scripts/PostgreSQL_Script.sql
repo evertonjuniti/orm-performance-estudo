@@ -3,50 +3,25 @@
 -- ***************************************************************
 -- ***************************************************************
 
-SET DATEFORMAT ymd;
-
-IF EXISTS(SELECT * FROM sys.procedures WHERE name = 'PopularVendas')  
-BEGIN 
-	DROP PROCEDURE dbo.PopularVendas 
-END 
-
-IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Vendas')  
-BEGIN 
-	DROP TABLE dbo.Vendas;
-END 
-
-IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Produto')  
-BEGIN 
-	DROP TABLE dbo.Produto;
-END 
-
-IF EXISTS(SELECT * FROM sys.tables WHERE name = 'CadastroCliente')  
-BEGIN 
-	DROP TABLE dbo.CadastroCliente;
-END 
-
-IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Cidade')  
-BEGIN 
-	DROP TABLE dbo.Cidade;
-END 
-
-IF EXISTS(SELECT * FROM sys.tables WHERE name = 'Estado')  
-BEGIN 
-	DROP TABLE dbo.Estado;
-END 
+DROP PROCEDURE IF EXISTS PopularVendas;
+DROP TABLE IF EXISTS Vendas;
+DROP TABLE IF EXISTS Produto;
+DROP TABLE IF EXISTS CadastroCliente;
+DROP TABLE IF EXISTS Cidade;
+DROP TABLE IF EXISTS Estado;
 
 /*
 Tabela de dominio que representa os estados brasileiros
 */
 
-CREATE TABLE dbo.Estado 
+CREATE TABLE Estado 
 (
-	Id TINYINT IDENTITY(1, 1) NOT NULL, 
+	Id SERIAL NOT NULL, 
 	Descricao VARCHAR(150) NOT NULL, 
-	CONSTRAINT PK_Estado PRIMARY KEY (Id) 
+	PRIMARY KEY (Id) 
 );
 
-INSERT INTO dbo.Estado (Descricao) 
+INSERT INTO Estado (Descricao) 
 VALUES ('Sao Paulo'), 
        ('Rio de Janeiro'), 
 	   ('Minas Gerais');
@@ -56,16 +31,16 @@ Tabela de dominio que representa as cidades brasileiras
 Utiliza-se o codigo da tabela de domonio de Estado para identificar a qual estado pertence cada cidade
 */
 
-CREATE TABLE dbo.Cidade 
+CREATE TABLE Cidade 
 (
-	Id SMALLINT IDENTITY(1, 1) NOT NULL, 
-	Id_Estado TINYINT NOT NULL, 
+	Id SERIAL NOT NULL, 
+	Id_Estado SMALLINT NOT NULL, 
 	Descricao VARCHAR(250) NOT NULL, 
-	CONSTRAINT PK_Cidade PRIMARY KEY (Id), 
-	CONSTRAINT FK_Estado_Cidade FOREIGN KEY (Id_Estado) REFERENCES Estado (Id) 
+	PRIMARY KEY (Id), 
+	FOREIGN KEY (Id_Estado) REFERENCES Estado (Id) 
 );
 
-INSERT INTO dbo.Cidade (Id_Estado, Descricao) 
+INSERT INTO Cidade (Id_Estado, Descricao) 
 VALUES (1, 'Santo Andre'), 
        (1, 'Sao Bernardo do Campo'), 
 	   (1, 'Sao Caetano do Sul'), 
@@ -82,9 +57,9 @@ Ha vinculo do cliente com a tabela de dominio Cidade
 Como a tabela de dominio Cidade ja possui vinculo com a tabela Estado, nao e necessario criar vinculo forte entre a tabela CadastroCliente e a tabela Estado
 */
 
-CREATE TABLE dbo.CadastroCliente 
+CREATE TABLE CadastroCliente 
 (
-	Id INTEGER IDENTITY(1, 1) NOT NULL, 
+	Id SERIAL NOT NULL, 
 	Nome VARCHAR(150) NOT NULL, 
 	Endereco VARCHAR(250) NOT NULL, 
 	Id_Cidade SMALLINT NOT NULL, 
@@ -92,11 +67,11 @@ CREATE TABLE dbo.CadastroCliente
 	Telefone1 VARCHAR(20) NOT NULL, 
 	Telefone2 VARCHAR(20) NULL, 
 	Telefone3 VARCHAR(20) NULL, 
-	CONSTRAINT PK_CadastroCliente PRIMARY KEY (Id), 
-	CONSTRAINT FK_Cidade_CadastroCliente FOREIGN KEY (Id_Cidade) REFERENCES Cidade (Id) 
+	PRIMARY KEY (Id), 
+	FOREIGN KEY (Id_Cidade) REFERENCES Cidade (Id) 
 );
 
-INSERT INTO dbo.CadastroCliente (Nome, Endereco, Id_Cidade, Email, Telefone1, Telefone2, Telefone3) 
+INSERT INTO CadastroCliente (Nome, Endereco, Id_Cidade, Email, Telefone1, Telefone2, Telefone3) 
 VALUES ('Cliente 1',  'Rua 1',  1, 'cliente_1@email.com',  '(11) 0000-0000', NULL, NULL), 
        ('Cliente 2',  'Rua 2',  1, 'cliente_2@email.com',  '(11) 0000-0000', '(11) 1111-1111', '(11) 2222-2222'), 
 	   ('Cliente 3',  'Rua 3',  1, 'cliente_3@email.com',  '(11) 0000-0000', '(11) 1111-1111', '(11) 2222-2222'), 
@@ -129,20 +104,20 @@ VALUES ('Cliente 1',  'Rua 1',  1, 'cliente_1@email.com',  '(11) 0000-0000', NUL
 Criacao de uma tabela para cadastro simples de produtos
 */
 
-CREATE TABLE dbo.Produto 
+CREATE TABLE Produto 
 (
-	Id SMALLINT IDENTITY(1, 1) NOT NULL, 
+	Id SERIAL NOT NULL, 
 	Descricao VARCHAR(250) NOT NULL, 
-	CONSTRAINT PK_Produto PRIMARY KEY (Id) 
+	PRIMARY KEY (Id) 
 );
 
 /*
 Criacao de um indice auxiliar, para filtragem a partir da coluna Descricao da tabela Produto
 */
 
-CREATE NONCLUSTERED INDEX IDX_Produto_Descricao ON dbo.Produto (Descricao);
+CREATE INDEX IDX_Produto_Descricao ON Produto (Descricao ASC);
 
-INSERT INTO dbo.Produto (Descricao) 
+INSERT INTO Produto (Descricao) 
 VALUES ('Produto A'), 
        ('Produto B'), 
        ('Produto C');
@@ -151,109 +126,112 @@ VALUES ('Produto A'),
 Criacao de uma tabela de vendas que ira unir informacoes de clientes e produtos
 */
 
-CREATE TABLE dbo.Vendas 
+CREATE TABLE Vendas 
 (
-	Id BIGINT IDENTITY(1, 1) NOT NULL, 
-	Pedido UNIQUEIDENTIFIER NOT NULL, 
+	Id SERIAL NOT NULL, 
+	Pedido UUID NOT NULL, 
 	Id_Cliente INTEGER NOT NULL, 
 	Id_Produto SMALLINT NOT NULL, 
 	Quantidade SMALLINT NOT NULL, 
 	Valor_Unitario NUMERIC(9, 2) NOT NULL, 
-	Data_Venda SMALLDATETIME NOT NULL, 
-	Observacao NVARCHAR(100) NULL, 
-	CONSTRAINT PK_Vendas PRIMARY KEY (Id, Id_Cliente, Id_Produto), 
-	CONSTRAINT UC_Vendas_Pedido_Cliente_Produto UNIQUE (Pedido, Id_Cliente, Id_Produto), 
-	CONSTRAINT FK_CadastroCliente_Vendas FOREIGN KEY (Id_Cliente) REFERENCES CadastroCliente (Id), 
-	CONSTRAINT FK_Produto_Vendas FOREIGN KEY (Id_Produto) REFERENCES Produto (Id) 
+	Data_Venda TIMESTAMP NOT NULL, 
+	Observacao VARCHAR(100) NULL, 
+	PRIMARY KEY (Id, Id_Cliente, Id_Produto), 
+	UNIQUE (Pedido, Id_Cliente, Id_Produto), 
+	FOREIGN KEY (Id_Cliente) REFERENCES CadastroCliente (Id), 
+	FOREIGN KEY (Id_Produto) REFERENCES Produto (Id) 
 );
 
 /*
 Criacao de um indice auxiliar, para uso no JOIN atraves das colunas Id_Cliente (com a tabela CadastroCliente) e Id_Produto (com a tabela Produto) 
 */
 
-CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Cliente ON dbo.Vendas (Id_Cliente);
-CREATE NONCLUSTERED INDEX IDX_Vendas_Id_Produto ON dbo.Vendas (Id_Produto);
+CREATE INDEX IDX_Vendas_Id_Cliente ON Vendas (Id_Cliente ASC);
+CREATE INDEX IDX_Vendas_Id_Produto ON Vendas (Id_Produto ASC);
 
 /*
 Criacao de um indice auxiliar, para filtragem a partir da coluna Data_Venda da tabela Vendas
 */
 
-CREATE NONCLUSTERED INDEX IDX_Vendas_DataVenda ON dbo.Vendas(Data_Venda) INCLUDE (Quantidade, Valor_Unitario); 
+CREATE INDEX IDX_Vendas_DataVenda ON Vendas(Data_Venda ASC); 
 
 /*
 Populando a tabela de vendas, parte dos dados estaticos mas com datas distintas
 */
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM   pg_catalog.pg_namespace n
+        JOIN   pg_catalog.pg_proc p
+        ON     p.pronamespace = n.oid
+        WHERE  n.nspname = 'public'
+        AND    p.proname = 'uuid_generate_v4'
+    )
+    THEN
+        CREATE EXTENSION "uuid-ossp";
+    END IF;
+END
+$$;
 
-CREATE PROCEDURE dbo.PopularVendas 
-AS 
-BEGIN 
-	DECLARE @DataInicial SMALLDATETIME = CAST('1990-01-01' AS SMALLDATETIME);
-	DECLARE @DataFinal SMALLDATETIME = CAST('2024-03-01' AS SMALLDATETIME);
-	DECLARE @DataAtual SMALLDATETIME = @DataInicial;
-	DECLARE @Bloco SMALLINT = 5000;
-	DECLARE @BlocoAtual SMALLINT = 0;
-	DECLARE @Pedido UNIQUEIDENTIFIER;
+CREATE PROCEDURE PopularVendas()
+LANGUAGE plpgsql
+AS $$
+	DECLARE DataInicial TIMESTAMP;
+    DECLARE DataFinal TIMESTAMP;
+    DECLARE DataAtual TIMESTAMP;
+    DECLARE Bloco INT;
+    DECLARE BlocoAtual INT;
+    DECLARE Pedido UUID;
+BEGIN
+	DataInicial := TO_TIMESTAMP('1990-01-01', 'YYYY-MM-DD');
+	DataFinal := TO_TIMESTAMP('2024-03-01', 'YYYY-MM-DD');
+	DataAtual := DataInicial;
 
-	BEGIN TRANSACTION;
+	WHILE (DataFinal > DataAtual) LOOP
+		Pedido := uuid_generate_v4();
 
-	WHILE (@DataFinal > @DataAtual) 
-	BEGIN 
-		IF (@BlocoAtual >= @Bloco) 
-		BEGIN 
-			COMMIT TRANSACTION;
-			BEGIN TRANSACTION;
-			SET @BlocoAtual = 0;
-		END 
-
-		SET @Pedido = NEWID();
-
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 1, 1, 10, 5.65, @DataAtual), 
-				(@Pedido, 1, 2, 10, 7.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 1, 1, 10, 5.65, DataAtual), 
+				(Pedido, 1, 2, 10, 7.65, DataAtual);
 				
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 2, 1, 20, 5.65, @DataAtual), 
-				(@Pedido, 2, 2, 20, 7.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 2, 1, 20, 5.65, DataAtual), 
+				(Pedido, 2, 2, 20, 7.65, DataAtual);
 		
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 3, 1, 30, 5.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 3, 1, 30, 5.65, DataAtual);
 
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 4, 2, 40, 7.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 4, 2, 40, 7.65, DataAtual);
 
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 5, 1, 50, 5.65, @DataAtual), 
-				(@Pedido, 5, 2, 50, 7.65, @DataAtual) 
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 5, 1, 50, 5.65, DataAtual), 
+				(Pedido, 5, 2, 50, 7.65, DataAtual);
 
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 6, 2, 60, 7.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 6, 2, 60, 7.65, DataAtual);
 
-		SET @Pedido = NEWID();
+		Pedido := uuid_generate_v4();
 
-		INSERT INTO dbo.Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
-		VALUES (@Pedido, 7, 1, 70, 5.65, @DataAtual);
+		INSERT INTO Vendas (Pedido, Id_Cliente, Id_Produto, Quantidade, Valor_Unitario, Data_Venda) 
+		VALUES (Pedido, 7, 1, 70, 5.65, DataAtual);
 
-		SET @DataAtual = DATEADD(d, 1, @DataAtual);
-		SET @BlocoAtual = @BlocoAtual + 10;
-	END 
+		DataAtual := DataAtual + INTERVAL '1 day';
+	END LOOP;
+END;$$;
 
-	IF (@BlocoAtual > 0)
-	BEGIN 
-		COMMIT TRANSACTION;
-	END
-END 
-
-EXEC dbo.PopularVendas;
+CALL PopularVendas();
 
 -- ***************************************************************
 -- ***************************************************************

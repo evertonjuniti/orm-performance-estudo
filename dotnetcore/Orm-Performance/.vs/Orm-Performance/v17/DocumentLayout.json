@@ -1,12 +1,37 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Everton Juniti Ogura\\Documents\\Github\\orm-performance-estudo\\dotnetcore\\Orm-Performance\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{28A06318-DEC7-4EB4-A4D5-5601D808CA7B}|Orm-Performance.csproj|c:\\users\\everton juniti ogura\\documents\\github\\orm-performance-estudo\\dotnetcore\\orm-performance\\controllers\\vendascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28A06318-DEC7-4EB4-A4D5-5601D808CA7B}|Orm-Performance.csproj|solutionrelative:controllers\\vendascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VendasController.cs",
+              "DocumentMoniker": "C:\\Users\\Everton Juniti Ogura\\Documents\\Github\\orm-performance-estudo\\dotnetcore\\Orm-Performance\\Controllers\\VendasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\VendasController.cs",
+              "ToolTip": "C:\\Users\\Everton Juniti Ogura\\Documents\\Github\\orm-performance-estudo\\dotnetcore\\Orm-Performance\\Controllers\\VendasController.cs",
+              "RelativeToolTip": "Controllers\\VendasController.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAA6wBEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-04T14:29:53.891Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

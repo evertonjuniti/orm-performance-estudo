@@ -231,7 +231,14 @@ BEGIN
 	END LOOP;
 END;$$;
 
-CALL PopularVendas();
+DO $$
+DECLARE 
+    i INT;
+BEGIN
+    FOR i IN 1..100 LOOP
+        CALL PopularVendas();
+    END LOOP;
+END $$;
 
 -- ***************************************************************
 -- ***************************************************************

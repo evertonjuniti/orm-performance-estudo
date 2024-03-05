@@ -58,7 +58,7 @@ Configure as conexões para os três bancos de dados. A vantagem do DBeaver é e
 
 ![imagens/imagem6.png](imagens/imagem6.png)
 
-1.7) Copie o conteúdo do arquivo `SQLServer_Script.sql` deste repositório e cole na janela de script que se abriu no DBeaver, certifique-se de que o banco de dados selecionado está o `DBTeste` (destacado em amarelo), selecione todo o script e depois clique no botão de `Executar instrução SQL` (destacado em vermelho)
+1.7) Copie o conteúdo do arquivo `SQLServer_Script.sql` deste repositório e cole na janela de script que se abriu no DBeaver, certifique-se de que o banco de dados selecionado está o `DBTeste` (destacado em amarelo), selecione todo o script e depois clique no botão de `Executar script SQL` (destacado em vermelho)
 
 ![imagens/imagem7.png](imagens/imagem7.png)
 

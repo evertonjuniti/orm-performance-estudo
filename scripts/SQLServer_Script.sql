@@ -251,9 +251,18 @@ BEGIN
 	BEGIN 
 		COMMIT TRANSACTION;
 	END
-END 
+END;
 
-EXEC dbo.PopularVendas;
+BEGIN
+	DECLARE @EXECUCOES SMALLINT = 100;
+	DECLARE @EXECUCAO SMALLINT = 1;
+
+	WHILE (@EXECUCAO <= @EXECUCOES)
+	BEGIN 
+		EXEC dbo.PopularVendas;
+		SET @EXECUCAO = @EXECUCAO + 1;
+	END;
+END;
 
 -- ***************************************************************
 -- ***************************************************************

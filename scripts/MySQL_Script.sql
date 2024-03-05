@@ -3,6 +3,7 @@
 -- ***************************************************************
 -- ***************************************************************
 
+DROP PROCEDURE IF EXISTS LoopTest;
 DROP PROCEDURE IF EXISTS PopularVendas;
 DROP TABLE IF EXISTS Vendas;
 DROP TABLE IF EXISTS Produto;
@@ -234,7 +235,22 @@ END$$
 
 DELIMITER ;
 
-CALL PopularVendas();
+DELIMITER //
+
+CREATE PROCEDURE LoopTest()
+BEGIN
+    DECLARE EXECUCAO INT;
+
+    SET @EXECUCAO = 1;
+    WHILE @EXECUCAO <= 100 DO
+        CALL PopularVendas();
+        SET @EXECUCAO = @EXECUCAO + 1;
+    END WHILE;
+END; //
+
+DELIMITER ;
+
+CALL LoopTest();
 
 -- ***************************************************************
 -- ***************************************************************

@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Orm_Performance.Repositories;
+
 namespace Orm_Performance
 {
     public class Program
@@ -8,6 +11,8 @@ namespace Orm_Performance
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<SQLServerDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
